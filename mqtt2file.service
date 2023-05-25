@@ -1,0 +1,12 @@
+[Unit]
+Description=Log MQTT Messages to File
+Requires=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/scripts/mqtt2file
+ExecStart=/home/pi/.local/bin/poetry run python mqtt2file.py
+
+[Install]
+WantedBy=multi-user.target
