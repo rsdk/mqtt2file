@@ -1,5 +1,15 @@
 # Simple MQTT to CSV logger
+For use with a raspberry pi and a MQTT Broker like Mosquitto.
+
+Two logging Modes are available:
+MQTT Topic Prefix or Topic List
+## MQTT Topic Prefix
 All MQTT Topics with a definable Prefix will be logged to daily CSV Files. 
+
+## MQTT Topic List
+Add Topics to the List in topics.py
+
+## CSV Filenames
 The file Name is determined by the MQTT Topic and the date.
 
 Example (energydata is the Prefix) :

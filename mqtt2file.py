@@ -1,8 +1,10 @@
 import datetime
 import paho.mqtt.client as mqtt
 import csv
+from topics import TOPICS
 
 MQTTTOPICPREFIX = "energydata"
+USE_TOPICS_LIST = True
 FILEPATHPREFIX = "csv"
 MQTTHOST = "100.64.201.29"
 
@@ -12,7 +14,11 @@ def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}")
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe(f"{MQTTTOPICPREFIX}/#", 0)
+    if USE_TOPICS_LIST:
+        for topic in TOPICS:
+            client.subscribe(f"{topic}", 0)
+    else:
+        client.subscribe(f"{MQTTTOPICPREFIX}/#", 0)
 
 
 def on_disconnect(client, userdata, rc):
