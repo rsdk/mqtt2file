@@ -6,7 +6,7 @@ from topics import TOPICS
 MQTTTOPICPREFIX = "energydata"
 USE_TOPICS_LIST = True
 FILEPATHPREFIX = "csv"
-MQTTHOST = "100.64.201.29"
+MQTTHOST = "192.168.2.2"
 
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -31,7 +31,7 @@ def on_message(client, userdata, msg):
     dt = datetime.datetime.utcnow()
     day_date = dt.strftime("%Y-%m-%d")
     file_name = f"{topic_to_filename(msg.topic)}_{day_date}.csv"
-    file_path = f"/home/pi/energydata/{FILEPATHPREFIX}/{file_name}"
+    file_path = f"/home/admin/energydata/{FILEPATHPREFIX}/{file_name}"
     with open(file_path, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([dt.isoformat(), bytes_to_str(msg.payload)])
