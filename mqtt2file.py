@@ -1,13 +1,22 @@
 import datetime
 import paho.mqtt.client as mqtt
 import csv
+import sentry_sdk
+import tomli
 from topics import TOPICS
 
-MQTTTOPICPREFIX = "energydata"
-USE_TOPICS_LIST = True
-FILEPATHPREFIX = "csv"
-MQTTHOST = "100.64.201.29"
 
+sentry_sdk.init(dsn="https://f8ff7595f3ceae2567a49237c20b04c6@o4506070241116160.ingest.sentry.io/4506070246096896",)
+with open("config.toml", mode="rb") as fp:
+    config = tomli.load(fp)
+
+MQTTTOPICPREFIX = config.get("MQTTTOPICPREFIX", "energydata")
+USE_TOPICS_LIST = config.get("USE_TOPICS_LIST", True)
+FILEPATHPREFIX = config.get("FILEPATHPREFIX", "csv")
+FILEPATH = config.get("FILEPATH", "/home/pi/energydata")
+MQTTHOST = config.get("MQTTHOST", "100.64.201.29")
+
+print(f"MQTTTOPICPREFIX: {MQTTTOPICPREFIX}")
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -31,7 +40,7 @@ def on_message(client, userdata, msg):
     dt = datetime.datetime.utcnow()
     day_date = dt.strftime("%Y-%m-%d")
     file_name = f"{topic_to_filename(msg.topic)}_{day_date}.csv"
-    file_path = f"/home/pi/energydata/{FILEPATHPREFIX}/{file_name}"
+    file_path = f"{FILEPATH}/{FILEPATHPREFIX}/{file_name}"
     with open(file_path, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([dt.isoformat(), bytes_to_str(msg.payload)])
