@@ -1,5 +1,5 @@
 MQTTTOPICPREFIX = "energydata"
 USE_TOPICS_LIST = true
-FILEPATH = "/home/pi/energydata"
+FILEPATH = "/home/admin/energydata"
 FILEPATHPREFIX = "csv"
 MQTTHOST = "100.64.201.29"
