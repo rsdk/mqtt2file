@@ -6,6 +6,10 @@ After=mosquitto.service
 [Service]
 Type=simple
 User=admin
+Restart=always
+RestartSec=1
+RestartSteps=10
+RuntimeMaxSec=1d
 WorkingDirectory=/home/admin/scripts/mqtt2file
 ExecStart=/home/admin/.local/bin/poetry run python mqtt2file.py
 
