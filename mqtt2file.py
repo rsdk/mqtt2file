@@ -16,7 +16,6 @@ FILEPATHPREFIX = config.get("FILEPATHPREFIX", "csv")
 FILEPATH = config.get("FILEPATH", "/home/pi/energydata")
 MQTTHOST = config.get("MQTTHOST", "100.64.201.29")
 
-print(f"MQTTTOPICPREFIX: {MQTTTOPICPREFIX}")
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -41,9 +40,13 @@ def on_message(client, userdata, msg):
     day_date = dt.strftime("%Y-%m-%d")
     file_name = f"{topic_to_filename(msg.topic)}_{day_date}.csv"
     file_path = f"{FILEPATH}/{FILEPATHPREFIX}/{file_name}"
-    with open(file_path, 'a', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow([dt.isoformat(), bytes_to_str(msg.payload)])
+    try:
+        with open(file_path, 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([dt.isoformat(), bytes_to_str(msg.payload)])
+    except UnicodeDecodeError as e:
+        sentry_sdk.capture_exception(e)
+        print(f"UnicodeDecodeError: {e}")
 
 
 def topic_to_filename(topic: str) -> str:
